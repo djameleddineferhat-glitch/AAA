@@ -1,0 +1,199 @@
+/* Généralisation du style pour tout le HTML */
+body {
+    background: url('file:///home/alaide/Bureau/anima.webp') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mise en page flexbox du body */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Pour les écrans plus larges, disposition en 2 colonnes */
+@media (min-width: 768px) {
+    main {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    #system-info {
+        flex: 1 1 100%;
+        min-width: 500px;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    #cpu-info, #memory-info, #top-cpu-processes, #file-info {
+        flex: 1 1 48%;
+        min-width: 250px;
+        max-width: 500px;
+        background-color: rgba(0,0,0,0.7);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        margin-bottom: 20px;
+    }
+}
+
+/* Style des sections */
+section {
+    background-color: rgba(0, 0, 0, 0.7);
+    margin: 10px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Header */
+header {
+    background-color: rgba(51, 51, 51, 0.8);
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+/* Texte */
+ul, li, p, h1, h2 {
+    color: #fff;
+    line-height: 1.6;
+}
+
+/* Colorations pour les taux d'usage */
+.green {
+    background-color: #4CAF50;
+}
+.orange {
+    background-color: #FF9800;
+}
+.red {
+    background-color: #F44336;
+}
+
+/* Cercles CPU et RAM */
+.circle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 12px solid #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    position: relative;
+    background: conic-gradient(green 0%, green 0%);
+    transition: background 1s ease-out;
+}
+.circle .percentage {
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+}
+.circle-container {
+    margin-bottom: 20px;
+}
+
+/* Styles pour la fréquence CPU */
+#cpu-info p {
+    font-size: 18px;
+    margin: 10px 0;
+    font-weight: bold;
+}
+#cpu-info p span {
+    color: #FF9800;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Barres processus CPU */
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.bar {
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    color: #fff;
+    text-align: right;
+    padding-right: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+.bar span {
+    font-size: 14px;
+    margin-left: 10px;
+    position: absolute;
+    left: 10px;
+}
+
+/* Diagramme fichiers */
+.file-bar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+.file-bar {
+    width: 100%;
+    height: 20px;
+    border-radius: 5px;
+    color: #fff;
+    text-align: right;
+    padding-right: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+.file-bar span {
+    font-size: 12px;
+    margin-left: 10px;
+    position: absolute;
+    left: 10px;
+}
+
+/* Footer transparent avec image */
+footer {
+    width: 100%;
+    height: 200px;
+    background-image: url('file:///home/alaide/Bureau/feu.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    position: relative; /* Permet à l'élément de mise à jour d'être positionné */
+}
+
+/* Style pour la date et l'heure de la dernière mise à jour */
+.last-update {
+    position: absolute;
+    bottom: 10px; /* Espace depuis le bas */
+    left: 10px;   /* Espace depuis la gauche */
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6); /* Fond semi-transparent pour améliorer la lisibilité */
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+

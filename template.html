@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="30">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="template.css">
+    <script>
+        // Met à jour le timestamp
+        function updateTimestamp() {
+            const timestampElement = document.getElementById('timestamp');
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2,'0');
+            const minutes = now.getMinutes().toString().padStart(2,'0');
+            const seconds = now.getSeconds().toString().padStart(2,'0');
+            timestampElement.innerHTML = `Timestamp: ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Met à jour la dernière date de mise à jour
+        function updateLastUpdate() {
+            const lastUpdateElement = document.getElementById('last-update-time');
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            };
+            lastUpdateElement.textContent = now.toLocaleDateString('fr-FR', options);
+        }
+
+        // Rendu des cercles CPU/RAM
+        function renderCircle(id, percentage) {
+            const circle = document.getElementById(id);
+            let color = percentage <=50 ? '#4CAF50' : percentage <=80 ? '#FF9800' : '#F44336';
+            circle.style.background = `conic-gradient(${color} 0% ${percentage}%, #444 ${percentage}% 100%)`;
+            circle.querySelector('.percentage').textContent = percentage + '%';
+        }
+
+        // Rendu des barres CPU
+        function renderCpuBarChart(topProcesses) {
+            const container = document.getElementById('cpu-bar-chart');
+            container.innerHTML = '';
+            topProcesses.forEach(proc => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                bar.style.width = proc.cpu_usage + '%';
+                bar.style.backgroundColor = proc.cpu_usage <=50 ? '#4CAF50' : proc.cpu_usage <=80 ? '#FF9800' : '#F44336';
+                const span = document.createElement('span');
+                span.textContent = proc.name + ' (' + proc.cpu_usage + '%)';
+                bar.appendChild(span);
+                container.appendChild(bar);
+            });
+        }
+
+        // Rendu des barres fichiers (sans .mp4)
+        function renderFileBarChart(fileData) {
+            const container = document.getElementById('file-bar-chart');
+            container.innerHTML = '';
+            fileData.forEach(file => {
+                if(file.ext === '.mp4') return; // Ignorer mp4
+                const bar = document.createElement('div');
+                bar.classList.add('file-bar');
+                let color = file.percentage <=50 ? '#4CAF50' : file.percentage <=80 ? '#FF9800' : '#F44336';
+                bar.style.backgroundColor = color;
+                bar.style.width = file.percentage + '%';
+                const span = document.createElement('span');
+                span.textContent = file.ext + ' - ' + file.percentage + '%';
+                bar.appendChild(span);
+                container.appendChild(bar);
+            });
+        }
+
+        window.onload = function() {
+            updateTimestamp();
+            setInterval(updateTimestamp, 1000);
+            updateLastUpdate(); // Initialiser la mise à jour
+
+            // Exemple de données (à remplacer par backend)
+            renderCircle('cpu-circle', {{ cpu_usage }});
+            renderCircle('ram-circle', {{ ram_usage }});
+
+            const topCpuProcesses = [
+                { name: 'gnome-shell', cpu_usage: 65 },
+                { name: 'firefox', cpu_usage: 30 },
+                { name: 'Isolated Web Co', cpu_usage: 80 }
+            ];
+            renderCpuBarChart(topCpuProcesses);
+
+            const fileData = [
+                { ext: '.txt', size: 2.5, percentage: 25 },
+                { ext: '.jpg', size: 3.5, percentage: 35 },
+                { ext: '.pdf', size: 1.2, percentage: 15 },
+                { ext: '.png', size: 4.8, percentage: 50 },
+                { ext: '.mp3', size: 3.0, percentage: 40 },
+                { ext: '.docx', size: 0.8, percentage: 8 },
+                { ext: '.xlsx', size: 2.0, percentage: 20 },
+                { ext: '.html', size: 1.5, percentage: 15 },
+                { ext: '.csv', size: 2.0, percentage: 20 },
+                { ext: '.zip', size: 5.0, percentage: 70 }
+            ];
+            renderFileBarChart(fileData);
+        };
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Bienvenue sur ton Dashboard</h1>
+        <p id="timestamp">Timestamp: {{ timestamp }}</p>
+    </header>
+
+    <main>
+        <!-- Informations système -->
+        <section id="system-info">
+            <h2>Informations Système</h2>
+            <ul>
+                <li><strong>Nom de la machine:</strong> {{ hostname }}</li>
+                <li><strong>Système d'exploitation:</strong> {{ os_info }}</li>
+                <li><strong>Uptime:</strong> {{ uptime }}</li>
+                <li><strong>Utilisateurs connectés:</strong> {{ num_users }}</li>
+                <li><strong>Adresse IP:</strong> {{ ip_address }}</li>
+                <li><strong>Charge système (1min, 5min, 15min):</strong> {{ load[0] }}, {{ load[1] }}, {{ load[2] }}</li>
+            </ul>
+        </section>
+
+        <!-- Section CPU avec cercle -->
+        <section id="cpu-info">
+            <h2>Utilisation CPU</h2>
+            <div class="circle-container">
+                <div id="cpu-circle" class="circle"><span class="percentage"></span></div>
+            </div>
+            <p><strong>Cœurs physiques:</strong> {{ cpu_cores }}</p>
+            <p><strong>Threads:</strong> {{ cpu_threads }}</p>
+            <p><strong>Fréquence CPU:</strong> {{ cpu_freq }} MHz</p>  <!-- Affichage de la fréquence -->
+        </section>
+
+        <!-- Section Mémoire avec cercle -->
+        <section id="memory-info">
+            <h2>Utilisation Mémoire</h2>
+            <div class="circle-container">
+                <div id="ram-circle" class="circle"><span class="percentage"></span></div>
+            </div>
+            <p><strong>RAM utilisée:</strong> {{ ram_used }} Go</p>
+            <p><strong>RAM totale:</strong> {{ ram_total }} Go</p>
+        </section>
+
+        <!-- Top CPU processes -->
+        <section id="top-cpu-processes">
+            <h2>Top 3 des Processus CPU</h2>
+            <div id="cpu-bar-chart" class="bar-container"></div>
+        </section>
+
+        <!-- Statistiques fichiers -->
+        <section id="file-info">
+            <h2>Statistiques Fichiers</h2>
+            <div id="file-bar-chart" class="file-bar-container"></div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Section de la date et de l'heure de la dernière mise à jour -->
+        <div class="last-update">
+            <p><strong>Dernière MAJ :</strong> <span id="last-update-time"></span></p>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+           
