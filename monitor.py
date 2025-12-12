@@ -112,7 +112,7 @@ def main():
         ram_used, ram_total, ram_usage = get_memory_info()
         hostname, os_info, uptime, num_users, ip_address, load = get_system_info()
         top_cpu, top_ram = get_process_info()
-        directory = '/home/alaide/Bureau'  # Remplacez ceci par le répertoire à analyser
+        directory = 'C:\Users\horus\OneDrive\Desktop'  # Remplacez ceci par le répertoire à analyser
         file_count, total_files, file_percentages, file_space, largest_files = analyze_files(directory)
 
         # Créer un dictionnaire de données à passer au modèle HTML
@@ -147,4 +147,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
